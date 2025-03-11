@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using Devices &#8212; ophyd-async 0.5.1.dev127+g016b1ffd documentation</title>
+    <title>Using Devices &#8212; ophyd-async 0.5.1.dev140+ga0b32c5e documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=8c379250"></script>
+    <script src="../_static/documentation_options.js?v=c1a4da97"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -129,8 +129,8 @@
       
     
     
-    <img src="../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev127+g016b1ffd documentation - Home"/>
-    <img src="../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev127+g016b1ffd documentation - Home"/>
+    <img src="../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
+    <img src="../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
   
   
 </a></div>
@@ -414,6 +414,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Using Devices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="implementing-devices.html">Implementing Devices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="writing-tests-for-devices.html">Writing Tests for Devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="implementing-detectors.html">Implementing File Writing Detectors</a></li>
 </ul>
 </div>
 </nav></div>
@@ -487,6 +488,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">bluesky.plan_stubs</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bps</span>  <span class="c1"># noqa: F401</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">bluesky.plans</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bluesky.preprocessors</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bpp</span>  <span class="c1"># noqa: F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.callbacks.best_effort</span><span class="w"> </span><span class="kn">import</span> <span class="n">BestEffortCallback</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.run_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunEngine</span><span class="p">,</span> <span class="n">autoawait_in_bluesky_event_loop</span>
 
@@ -578,36 +580,36 @@ In [1]:
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">grid_scan</span><span class="p">([</span><span class="n">pdet</span><span class="p">],</span> <span class="n">stage</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">stage</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
 
-<span class="go">Transient Scan ID: 1     Time: 2025-02-21 14:25:25</span>
-<span class="go">Persistent Unique Scan ID: &#39;671fc38b-246d-459d-af49-ed7eccd21d34&#39;</span>
-<span class="go">Trigger took 0.1009683609008789</span>
+<span class="go">Transient Scan ID: 8     Time: 2025-03-11 06:43:29</span>
+<span class="go">Persistent Unique Scan ID: &#39;7d7a8943-4999-43df-91ce-8ef8ce7900f0&#39;</span>
+<span class="go">Trigger took 0.10073137283325195</span>
 <span class="go">New stream: &#39;primary&#39;</span>
 <span class="go">+-----------+------------+------------+------------+----------------------+----------------------+----------------------+</span>
 <span class="go">|   seq_num |       time |    stage-x |    stage-y | pdet-channel-1-value | pdet-channel-2-value | pdet-channel-3-value |</span>
 <span class="go">+-----------+------------+------------+------------+----------------------+----------------------+----------------------+</span>
-<span class="go">|         1 | 14:25:26.1 |      1.000 |      2.000 |                  921 |                  887 |                  859 |</span>
-<span class="go">Trigger took 0.10091853141784668</span>
-<span class="go">|         2 | 14:25:27.1 |      1.000 |      2.500 |                  959 |                  926 |                  898 |</span>
-<span class="go">Trigger took 0.10088706016540527</span>
-<span class="go">|         3 | 14:25:28.0 |      1.000 |      3.000 |                  937 |                  903 |                  875 |</span>
-<span class="go">Trigger took 0.10094094276428223</span>
-<span class="go">|         4 | 14:25:28.9 |      1.500 |      2.000 |                  976 |                  975 |                  974 |</span>
-<span class="go">Trigger took 0.10085391998291016</span>
-<span class="go">|         5 | 14:25:29.8 |      1.500 |      2.500 |                  843 |                  843 |                  842 |</span>
-<span class="go">Trigger took 0.1008296012878418</span>
-<span class="go">|         6 | 14:25:30.7 |      1.500 |      3.000 |                  660 |                  660 |                  659 |</span>
-<span class="go">Trigger took 0.10083961486816406</span>
-<span class="go">|         7 | 14:25:31.6 |      2.000 |      2.000 |                  761 |                  740 |                  722 |</span>
-<span class="go">Trigger took 0.10090112686157227</span>
-<span class="go">|         8 | 14:25:32.5 |      2.000 |      2.500 |                  537 |                  516 |                  498 |</span>
-<span class="go">Trigger took 0.1009221076965332</span>
-<span class="go">|         9 | 14:25:33.4 |      2.000 |      3.000 |                  487 |                  467 |                  448 |</span>
+<span class="go">|         1 | 06:43:29.5 |      1.000 |      2.000 |                  921 |                  887 |                  859 |</span>
+<span class="go">Trigger took 0.1007528305053711</span>
+<span class="go">|         2 | 06:43:30.5 |      1.000 |      2.500 |                  959 |                  926 |                  898 |</span>
+<span class="go">Trigger took 0.10092878341674805</span>
+<span class="go">|         3 | 06:43:31.4 |      1.000 |      3.000 |                  937 |                  903 |                  875 |</span>
+<span class="go">Trigger took 0.1008305549621582</span>
+<span class="go">|         4 | 06:43:32.4 |      1.500 |      2.000 |                  976 |                  975 |                  974 |</span>
+<span class="go">Trigger took 0.10069632530212402</span>
+<span class="go">|         5 | 06:43:33.3 |      1.500 |      2.500 |                  843 |                  843 |                  842 |</span>
+<span class="go">Trigger took 0.10071086883544922</span>
+<span class="go">|         6 | 06:43:34.2 |      1.500 |      3.000 |                  660 |                  660 |                  659 |</span>
+<span class="go">Trigger took 0.10075974464416504</span>
+<span class="go">|         7 | 06:43:35.1 |      2.000 |      2.000 |                  761 |                  740 |                  722 |</span>
+<span class="go">Trigger took 0.10071301460266113</span>
+<span class="go">|         8 | 06:43:36.0 |      2.000 |      2.500 |                  537 |                  516 |                  498 |</span>
+<span class="go">Trigger took 0.10074019432067871</span>
+<span class="go">|         9 | 06:43:36.9 |      2.000 |      3.000 |                  487 |                  467 |                  448 |</span>
 <span class="go">+-----------+------------+------------+------------+----------------------+----------------------+----------------------+</span>
-<span class="go">generator grid_scan [&#39;671fc38b&#39;] (scan num: 1)</span>
+<span class="go">generator grid_scan [&#39;7d7a8943&#39;] (scan num: 8)</span>
 
 
 
-<span class="gh">Out[1]: </span><span class="go">RunEngineResult(run_start_uids=(&#39;671fc38b-246d-459d-af49-ed7eccd21d34&#39;,), plan_result=&#39;671fc38b-246d-459d-af49-ed7eccd21d34&#39;, exit_status=&#39;success&#39;, interrupted=False, reason=&#39;&#39;, exception=None)</span>
+<span class="gh">Out[1]: </span><span class="go">RunEngineResult(run_start_uids=(&#39;7d7a8943-4999-43df-91ce-8ef8ce7900f0&#39;,), plan_result=&#39;7d7a8943-4999-43df-91ce-8ef8ce7900f0&#39;, exit_status=&#39;success&#39;, interrupted=False, reason=&#39;&#39;, exception=None)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/sim_grid_scan.png"><img alt="../_images/sim_grid_scan.png" src="../_images/sim_grid_scan.png" style="width: 4in;" />
@@ -617,27 +619,27 @@ In [1]:
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [2]: </span><span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">grid_scan</span><span class="p">([</span><span class="n">bdet</span><span class="p">],</span> <span class="n">stage</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">stage</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
 
-<span class="go">Transient Scan ID: 2     Time: 2025-02-21 14:25:34</span>
-<span class="go">Persistent Unique Scan ID: &#39;4713a863-54e3-43a2-9ea0-99c903ba7a05&#39;</span>
+<span class="go">Transient Scan ID: 9     Time: 2025-03-11 06:43:38</span>
+<span class="go">Persistent Unique Scan ID: &#39;7e9d97fc-1517-4d0a-9429-560cade97f5c&#39;</span>
 <span class="go">New stream: &#39;primary&#39;</span>
-<span class="go">+-----------+------------+------------+------------+------------+</span>
-<span class="go">|   seq_num |       time |    stage-x |    stage-y |   bdet-sum |</span>
-<span class="go">+-----------+------------+------------+------------+------------+</span>
-<span class="go">|         1 | 14:25:34.9 |      1.000 |      2.000 |            |</span>
-<span class="go">|         2 | 14:25:35.0 |      1.000 |      2.500 |            |</span>
-<span class="go">|         3 | 14:25:35.2 |      1.000 |      3.000 |            |</span>
-<span class="go">|         4 | 14:25:35.3 |      1.500 |      2.000 |            |</span>
-<span class="go">|         5 | 14:25:35.4 |      1.500 |      2.500 |            |</span>
-<span class="go">|         6 | 14:25:35.6 |      1.500 |      3.000 |            |</span>
-<span class="go">|         7 | 14:25:35.7 |      2.000 |      2.000 |            |</span>
-<span class="go">|         8 | 14:25:35.9 |      2.000 |      2.500 |            |</span>
-<span class="go">|         9 | 14:25:36.0 |      2.000 |      3.000 |            |</span>
-<span class="go">+-----------+------------+------------+------------+------------+</span>
-<span class="go">generator grid_scan [&#39;4713a863&#39;] (scan num: 2)</span>
+<span class="go">+-----------+------------+------------+------------+</span>
+<span class="go">|   seq_num |       time |    stage-x |    stage-y |</span>
+<span class="go">+-----------+------------+------------+------------+</span>
+<span class="go">|         1 | 06:43:38.3 |      1.000 |      2.000 |</span>
+<span class="go">|         2 | 06:43:38.4 |      1.000 |      2.500 |</span>
+<span class="go">|         3 | 06:43:38.6 |      1.000 |      3.000 |</span>
+<span class="go">|         4 | 06:43:38.7 |      1.500 |      2.000 |</span>
+<span class="go">|         5 | 06:43:38.9 |      1.500 |      2.500 |</span>
+<span class="go">|         6 | 06:43:39.0 |      1.500 |      3.000 |</span>
+<span class="go">|         7 | 06:43:39.1 |      2.000 |      2.000 |</span>
+<span class="go">|         8 | 06:43:39.3 |      2.000 |      2.500 |</span>
+<span class="go">|         9 | 06:43:39.4 |      2.000 |      3.000 |</span>
+<span class="go">+-----------+------------+------------+------------+</span>
+<span class="go">generator grid_scan [&#39;7e9d97fc&#39;] (scan num: 9)</span>
 
 
 
-<span class="gh">Out[2]: </span><span class="go">RunEngineResult(run_start_uids=(&#39;4713a863-54e3-43a2-9ea0-99c903ba7a05&#39;,), plan_result=&#39;4713a863-54e3-43a2-9ea0-99c903ba7a05&#39;, exit_status=&#39;success&#39;, interrupted=False, reason=&#39;&#39;, exception=None)</span>
+<span class="gh">Out[2]: </span><span class="go">RunEngineResult(run_start_uids=(&#39;7e9d97fc-1517-4d0a-9429-560cade97f5c&#39;,), plan_result=&#39;7e9d97fc-1517-4d0a-9429-560cade97f5c&#39;, exit_status=&#39;success&#39;, interrupted=False, reason=&#39;&#39;, exception=None)</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -652,6 +654,7 @@ In [1]:
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">bluesky.plan_stubs</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bps</span>  <span class="c1"># noqa: F401</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">bluesky.plans</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bluesky.preprocessors</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bpp</span>  <span class="c1"># noqa: F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.callbacks.best_effort</span><span class="w"> </span><span class="kn">import</span> <span class="n">BestEffortCallback</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.run_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunEngine</span><span class="p">,</span> <span class="n">autoawait_in_bluesky_event_loop</span>
 
