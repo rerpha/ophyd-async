@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ophyd_async.epics.adcore._hdf_writer &#8212; ophyd-async 0.5.1.dev140+ga0b32c5e documentation</title>
+    <title>ophyd_async.epics.adcore._hdf_writer &#8212; ophyd-async 0.5.1.dev237+g9d2016b89 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../_static/documentation_options.js?v=c1a4da97"></script>
+    <script src="../../../../_static/documentation_options.js?v=6ed3e5a6"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -134,8 +134,8 @@ window.addEventListener("load", () => mermaid.run());
       
     
     
-    <img src="../../../../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
-    <img src="../../../../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
+    <img src="../../../../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev237+g9d2016b89 documentation - Home"/>
+    <img src="../../../../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev237+g9d2016b89 documentation - Home"/>
   
   
 </a></div>
@@ -465,17 +465,17 @@ window.addEventListener("load", () => mermaid.run());
   <h1>Source code for ophyd_async.epics.adcore._hdf_writer</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncIterator</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeGuard</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">xml.etree</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElementTree</span> <span class="k">as</span> <span class="n">ET</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamAsset</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">event_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataKey</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">PositiveInt</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd_async.core</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DatasetDescriber</span><span class="p">,</span>
     <span class="n">HDFDatasetDescription</span><span class="p">,</span>
     <span class="n">HDFDocumentComposer</span><span class="p">,</span>
-    <span class="n">NameProvider</span><span class="p">,</span>
     <span class="n">PathProvider</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -485,6 +485,10 @@ window.addEventListener("load", () => mermaid.run());
     <span class="n">convert_param_dtype_to_np</span><span class="p">,</span>
     <span class="n">convert_pv_dtype_to_np</span><span class="p">,</span>
 <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_fully_described</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+    <span class="k">return</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">shape</span>
 
 
 <div class="viewcode-block" id="ADHDFWriter">
@@ -498,14 +502,12 @@ window.addEventListener("load", () => mermaid.run());
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fileio</span><span class="p">:</span> <span class="n">NDFileHDFIO</span><span class="p">,</span>
         <span class="n">path_provider</span><span class="p">:</span> <span class="n">PathProvider</span><span class="p">,</span>
-        <span class="n">name_provider</span><span class="p">:</span> <span class="n">NameProvider</span><span class="p">,</span>
         <span class="n">dataset_describer</span><span class="p">:</span> <span class="n">DatasetDescriber</span><span class="p">,</span>
         <span class="n">plugins</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NDPluginBaseIO</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">fileio</span><span class="p">,</span>
             <span class="n">path_provider</span><span class="p">,</span>
-            <span class="n">name_provider</span><span class="p">,</span>
             <span class="n">dataset_describer</span><span class="p">,</span>
             <span class="n">plugins</span><span class="o">=</span><span class="n">plugins</span><span class="p">,</span>
             <span class="n">file_extension</span><span class="o">=</span><span class="s2">&quot;.h5&quot;</span><span class="p">,</span>
@@ -517,11 +519,10 @@ window.addEventListener("load", () => mermaid.run());
 
 <div class="viewcode-block" id="ADHDFWriter.open">
 <a class="viewcode-back" href="../../../../_api/ophyd_async/ophyd_async.epics.adcore.html#ophyd_async.epics.adcore.ADHDFWriter.open">[docs]</a>
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataKey</span><span class="p">]:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span> <span class="o">=</span> <span class="kc">None</span>
-
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">open</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exposures_per_event</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataKey</span><span class="p">]:</span>
         <span class="c1"># Setting HDF writer specific signals</span>
-
         <span class="c1"># Make sure we are using chunk auto-sizing</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">chunk_size_auto</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
 
@@ -532,29 +533,46 @@ window.addEventListener("load", () => mermaid.run());
             <span class="bp">self</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">xml_file_name</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
-        <span class="c1"># Set common AD file plugin params, begin capturing</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">begin_capture</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_provider</span><span class="p">(</span><span class="n">device_name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 
-        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_provider</span><span class="p">()</span>
+        <span class="c1"># Set common AD file plugin params, begin capturing</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_begin_capture</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
         <span class="n">detector_shape</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_describer</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span>
         <span class="n">np_dtype</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_describer</span><span class="o">.</span><span class="n">np_datatype</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_multiplier</span> <span class="o">=</span> <span class="n">multiplier</span>
-        <span class="n">outer_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">multiplier</span><span class="p">,)</span> <span class="k">if</span> <span class="n">multiplier</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">()</span>
 
-        <span class="c1"># Determine number of frames that will be saved per HDF chunk</span>
+        <span class="c1"># Used by the base class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exposures_per_event</span> <span class="o">=</span> <span class="n">exposures_per_event</span>
+
+        <span class="c1"># Determine number of frames that will be saved per HDF chunk.</span>
+        <span class="c1"># On a fresh IOC startup, this is set to zero until the first capture,</span>
+        <span class="c1"># so if it is zero, set it to 1.</span>
         <span class="n">frames_per_chunk</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">num_frames_chunks</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">frames_per_chunk</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">frames_per_chunk</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">num_frames_chunks</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">frames_per_chunk</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_fully_described</span><span class="p">(</span><span class="n">detector_shape</span><span class="p">):</span>
+            <span class="c1"># Questions:</span>
+            <span class="c1"># - Can AreaDetector support this?</span>
+            <span class="c1"># - How to deal with chunking?</span>
+            <span class="c1"># Don&#39;t support for now - leave option open to support it later</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Datasets with partially unknown dimensionality &quot;</span>
+                <span class="s2">&quot;are not currently supported by ADHDFWriter.&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Add the main data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">HDFDatasetDescription</span><span class="p">(</span>
                 <span class="n">data_key</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">dataset</span><span class="o">=</span><span class="s2">&quot;/entry/data/data&quot;</span><span class="p">,</span>
-                <span class="n">shape</span><span class="o">=</span><span class="n">detector_shape</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">exposures_per_event</span><span class="p">,</span> <span class="o">*</span><span class="n">detector_shape</span><span class="p">),</span>
                 <span class="n">dtype_numpy</span><span class="o">=</span><span class="n">np_dtype</span><span class="p">,</span>
-                <span class="n">multiplier</span><span class="o">=</span><span class="n">multiplier</span><span class="p">,</span>
                 <span class="n">chunk_shape</span><span class="o">=</span><span class="p">(</span><span class="n">frames_per_chunk</span><span class="p">,</span> <span class="o">*</span><span class="n">detector_shape</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="p">]</span>
+
         <span class="c1"># And all the scalar datasets</span>
         <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plugins</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">maybe_xml</span> <span class="o">=</span> <span class="k">await</span> <span class="n">plugin</span><span class="o">.</span><span class="n">nd_attributes_file</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
@@ -576,20 +594,29 @@ window.addEventListener("load", () => mermaid.run());
                         <span class="n">HDFDatasetDescription</span><span class="p">(</span>
                             <span class="n">data_key</span><span class="o">=</span><span class="n">data_key</span><span class="p">,</span>
                             <span class="n">dataset</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/entry/instrument/NDAttributes/</span><span class="si">{</span><span class="n">data_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                            <span class="n">shape</span><span class="o">=</span><span class="p">(),</span>
+                            <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">exposures_per_event</span><span class="p">,)</span>
+                            <span class="k">if</span> <span class="n">exposures_per_event</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                            <span class="k">else</span> <span class="p">(),</span>
                             <span class="n">dtype_numpy</span><span class="o">=</span><span class="n">np_datatype</span><span class="p">,</span>
                             <span class="c1"># NDAttributes appear to always be configured with</span>
                             <span class="c1"># this chunk size</span>
                             <span class="n">chunk_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16384</span><span class="p">,),</span>
-                            <span class="n">multiplier</span><span class="o">=</span><span class="n">multiplier</span><span class="p">,</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span> <span class="o">=</span> <span class="n">HDFDocumentComposer</span><span class="p">(</span>
+            <span class="c1"># See https://github.com/bluesky/ophyd-async/issues/122</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_path_info</span><span class="o">.</span><span class="n">directory_uri</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_path_info</span><span class="o">.</span><span class="n">filename</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_extension</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="n">describe</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">ds</span><span class="o">.</span><span class="n">data_key</span><span class="p">:</span> <span class="n">DataKey</span><span class="p">(</span>
                 <span class="n">source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">full_file_name</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
-                <span class="n">shape</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">outer_shape</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span> <span class="k">if</span> <span class="n">ds</span><span class="o">.</span><span class="n">shape</span> <span class="k">else</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span>
+                <span class="k">if</span> <span class="n">exposures_per_event</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                <span class="k">else</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
                 <span class="n">dtype_numpy</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">dtype_numpy</span><span class="p">,</span>
                 <span class="n">external</span><span class="o">=</span><span class="s2">&quot;STREAM:&quot;</span><span class="p">,</span>
             <span class="p">)</span>
@@ -601,26 +628,15 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="ADHDFWriter.collect_stream_docs">
 <a class="viewcode-back" href="../../../../_api/ophyd_async/ophyd_async.epics.adcore.html#ophyd_async.epics.adcore.ADHDFWriter.collect_stream_docs">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">collect_stream_docs</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">indices_written</span><span class="p">:</span> <span class="nb">int</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">indices_written</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">StreamAsset</span><span class="p">]:</span>
         <span class="c1"># TODO: fail if we get dropped frames</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;open() not called on </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">flush_now</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">indices_written</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="p">:</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">full_file_name</span><span class="o">.</span><span class="n">get_value</span><span class="p">())</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span> <span class="o">=</span> <span class="n">HDFDocumentComposer</span><span class="p">(</span>
-                    <span class="c1"># See https://github.com/bluesky/ophyd-async/issues/122</span>
-                    <span class="n">path</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="c1"># stream resource says &quot;here is a dataset&quot;,</span>
-                <span class="c1"># stream datum says &quot;here are N frames in that stream resource&quot;,</span>
-                <span class="c1"># you get one stream resource and many stream datums per scan</span>
-
-                <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">stream_resources</span><span class="p">():</span>
-                    <span class="k">yield</span> <span class="s2">&quot;stream_resource&quot;</span><span class="p">,</span> <span class="n">doc</span>
-            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">stream_data</span><span class="p">(</span><span class="n">indices_written</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="s2">&quot;stream_datum&quot;</span><span class="p">,</span> <span class="n">doc</span></div>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">make_stream_docs</span><span class="p">(</span><span class="n">indices_written</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">doc</span></div>
 </div>
 
 </pre></div>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>How to interact with signals while implementing bluesky verbs &#8212; ophyd-async 0.5.1.dev140+ga0b32c5e documentation</title>
+    <title>How to interact with signals while implementing bluesky verbs &#8212; ophyd-async 0.5.1.dev237+g9d2016b89 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=c1a4da97"></script>
+    <script src="../_static/documentation_options.js?v=6ed3e5a6"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -129,8 +129,8 @@
       
     
     
-    <img src="../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
-    <img src="../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
+    <img src="../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev237+g9d2016b89 documentation - Home"/>
+    <img src="../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev237+g9d2016b89 documentation - Home"/>
   
   
 </a></div>
@@ -412,6 +412,7 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="choose-right-baseclass.html">How to choose the right base class when implementing a new Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribute.html">How to contribute to the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derive-one-signal-from-others.html">How to derive one signal from others</a></li>
 <li class="toctree-l1"><a class="reference internal" href="implement-ad-detector.html">How to implement a Device for an EPICS areaDetector</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">How to interact with signals while implementing bluesky verbs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="put-device-back.html">How to use settings to put devices back in their original state</a></li>
@@ -547,7 +548,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">wait_for_value</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">num_captured</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">45</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Which you can use to implement a tolerance check using <a class="reference external" href="https://numpy.org/devdocs/reference/generated/numpy.isclose.html#numpy.isclose" title="NumPy 2.3.dev0"><code class="iref myst docutils literal notranslate"><span class="pre">numpy.isclose</span></code></a>:</p>
+<p>Which you can use to implement a tolerance check using <a class="reference external" href="https://numpy.org/devdocs/reference/generated/numpy.isclose.html#numpy.isclose" title="NumPy 2.4.dev0"><code class="iref myst docutils literal notranslate"><span class="pre">numpy.isclose</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">wait_for_value</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mf">32.79</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>

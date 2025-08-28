@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ophyd_async.core._utils &#8212; ophyd-async 0.5.1.dev140+ga0b32c5e documentation</title>
+    <title>ophyd_async.core._utils &#8212; ophyd-async 0.5.1.dev237+g9d2016b89 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=c1a4da97"></script>
+    <script src="../../../_static/documentation_options.js?v=6ed3e5a6"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -134,8 +134,8 @@ window.addEventListener("load", () => mermaid.run());
       
     
     
-    <img src="../../../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
-    <img src="../../../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
+    <img src="../../../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev237+g9d2016b89 documentation - Home"/>
+    <img src="../../../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev237+g9d2016b89 documentation - Home"/>
   
   
 </a></div>
@@ -469,11 +469,20 @@ window.addEventListener("load", () => mermaid.run());
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">EnumMeta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">ParamSpec</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">get_args</span><span class="p">,</span> <span class="n">get_origin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">EnumMeta</span><span class="p">,</span> <span class="n">StrEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Generic</span><span class="p">,</span>
+    <span class="n">Literal</span><span class="p">,</span>
+    <span class="n">ParamSpec</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">get_args</span><span class="p">,</span>
+    <span class="n">get_origin</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mock</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">ConfigDict</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">)</span>
@@ -484,23 +493,16 @@ window.addEventListener("load", () => mermaid.run());
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;ophyd_async&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span><span class="w"> </span><span class="nc">StrictEnumMeta</span><span class="p">(</span><span class="n">EnumMeta</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="n">metacls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">metacls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UppercaseNameEnumMeta</span><span class="p">(</span><span class="n">EnumMeta</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">lowercase_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ret</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">isupper</span><span class="p">()]</span>  <span class="c1"># type: ignore</span>
         <span class="k">if</span> <span class="n">lowercase_names</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Names </span><span class="si">{</span><span class="n">lowercase_names</span><span class="si">}</span><span class="s2"> should be uppercase&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span>
 
 
-<div class="viewcode-block" id="StrictEnum">
-<a class="viewcode-back" href="../../../_api/ophyd_async/ophyd_async.core.html#ophyd_async.core.StrictEnum">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">StrictEnum</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">StrictEnumMeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;All members should exist in the Backend, and there will be no extras.&quot;&quot;&quot;</span></div>
-
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">SubsetEnumMeta</span><span class="p">(</span><span class="n">StrictEnumMeta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnyStringUppercaseNameEnumMeta</span><span class="p">(</span><span class="n">UppercaseNameEnumMeta</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return given value if it is a string and not a member of the enum.</span>
 
@@ -522,11 +524,28 @@ window.addEventListener("load", () => mermaid.run());
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="StrictEnum">
+<a class="viewcode-back" href="../../../_api/ophyd_async/ophyd_async.core.html#ophyd_async.core.StrictEnum">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StrictEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">UppercaseNameEnumMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;All members should exist in the Backend, and there will be no extras.&quot;&quot;&quot;</span></div>
+
+
+
 <div class="viewcode-block" id="SubsetEnum">
 <a class="viewcode-back" href="../../../_api/ophyd_async/ophyd_async.core.html#ophyd_async.core.SubsetEnum">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">SubsetEnum</span><span class="p">(</span><span class="n">StrictEnum</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">SubsetEnumMeta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubsetEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">AnyStringUppercaseNameEnumMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;All members should exist in the Backend, but there may be extras.&quot;&quot;&quot;</span></div>
 
+
+
+<div class="viewcode-block" id="SupersetEnum">
+<a class="viewcode-back" href="../../../_api/ophyd_async/ophyd_async.core.html#ophyd_async.core.SupersetEnum">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SupersetEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">UppercaseNameEnumMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Some members should exist in the Backend, and there should be no extras.&quot;&quot;&quot;</span></div>
+
+
+
+<span class="n">EnumTypes</span> <span class="o">=</span> <span class="n">StrictEnum</span> <span class="o">|</span> <span class="n">SubsetEnum</span> <span class="o">|</span> <span class="n">SupersetEnum</span>
 
 
 <span class="n">CALCULATE_TIMEOUT</span> <span class="o">=</span> <span class="s2">&quot;CALCULATE_TIMEOUT&quot;</span>
@@ -698,10 +717,11 @@ window.addEventListener("load", () => mermaid.run());
 
 <div class="viewcode-block" id="get_enum_cls">
 <a class="viewcode-back" href="../../../_api/ophyd_async/ophyd_async.core.html#ophyd_async.core.get_enum_cls">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_enum_cls</span><span class="p">(</span><span class="n">datatype</span><span class="p">:</span> <span class="nb">type</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">StrictEnum</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_enum_cls</span><span class="p">(</span><span class="n">datatype</span><span class="p">:</span> <span class="nb">type</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">EnumTypes</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the enum class from a datatype.</span>
 
-<span class="sd">    :raises TypeError: if type is not a [](#StrictEnum) or [](#SubsetEnum) subclass</span>
+<span class="sd">    :raises TypeError: if type is not a [](#StrictEnum) or [](#SubsetEnum)</span>
+<span class="sd">    or [](#SupersetEnum) subclass</span>
 <span class="sd">    ```python</span>
 <span class="sd">    &gt;&gt;&gt; from ophyd_async.core import StrictEnum</span>
 <span class="sd">    &gt;&gt;&gt; from collections.abc import Sequence</span>
@@ -717,11 +737,13 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Sequence</span><span class="p">:</span>
         <span class="n">datatype</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">datatype</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">datatype</span> <span class="o">=</span> <span class="n">get_origin_class</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">datatype</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">datatype</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">datatype</span><span class="p">,</span> <span class="n">StrictEnum</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">datatype</span><span class="p">,</span> <span class="n">EnumTypes</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2"> should inherit from ophyd_async.core.SubsetEnum &quot;</span>
-                <span class="s2">&quot;or ophyd_async.core.StrictEnum&quot;</span>
+                <span class="s2">&quot;or ophyd_async.core.StrictEnum &quot;</span>
+                <span class="s2">&quot;or ophyd_async.core.SupersetEnum.&quot;</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">datatype</span>
     <span class="k">return</span> <span class="kc">None</span></div>
@@ -771,7 +793,7 @@ window.addEventListener("load", () => mermaid.run());
 
 <div class="viewcode-block" id="gather_dict">
 <a class="viewcode-back" href="../../../_api/ophyd_async/ophyd_async.core.html#ophyd_async.core.gather_dict">[docs]</a>
-<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">gather_dict</span><span class="p">(</span><span class="n">coros</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">V</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">]:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">gather_dict</span><span class="p">(</span><span class="n">coros</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">V</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Take named coros and return a dict of their name to their return value.&quot;&quot;&quot;</span>
     <span class="n">values</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">coros</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">coros</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
@@ -869,6 +891,36 @@ window.addEventListener("load", () => mermaid.run());
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">attach_mock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mock</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock</span></div>
+
+
+
+<div class="viewcode-block" id="ConfinedModel">
+<a class="viewcode-back" href="../../../_api/ophyd_async/ophyd_async.core.html#ophyd_async.core.ConfinedModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfinedModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class confined to explicitly defined fields in the model schema.&quot;&quot;&quot;</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span>
+        <span class="n">extra</span><span class="o">=</span><span class="s2">&quot;forbid&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="error_if_none">
+<a class="viewcode-back" href="../../../_api/ophyd_async/ophyd_async.core.html#ophyd_async.core.error_if_none">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">error_if_none</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">T</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check and return the value if not None.</span>
+
+<span class="sd">    :param value: The value to check</span>
+<span class="sd">    :param msg: The `RuntimeError` message to raise if it is None</span>
+<span class="sd">    :raises RuntimeError: If the value is None</span>
+<span class="sd">    :returns: The value if not None</span>
+
+<span class="sd">    Used to implement a pattern where a variable is None at init, then</span>
+<span class="sd">    changed by a method, then used in a later method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span></div>
 
 </pre></div>
 

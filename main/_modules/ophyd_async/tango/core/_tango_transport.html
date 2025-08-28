@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ophyd_async.tango.core._tango_transport &#8212; ophyd-async 0.5.1.dev140+ga0b32c5e documentation</title>
+    <title>ophyd_async.tango.core._tango_transport &#8212; ophyd-async 0.5.1.dev237+g9d2016b89 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../_static/documentation_options.js?v=c1a4da97"></script>
+    <script src="../../../../_static/documentation_options.js?v=6ed3e5a6"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -134,8 +134,8 @@ window.addEventListener("load", () => mermaid.run());
       
     
     
-    <img src="../../../../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
-    <img src="../../../../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev140+ga0b32c5e documentation - Home"/>
+    <img src="../../../../_static/ophyd-async-logo.svg" class="logo__image only-light" alt="ophyd-async 0.5.1.dev237+g9d2016b89 documentation - Home"/>
+    <img src="../../../../_static/ophyd-async-logo.svg" class="logo__image only-dark pst-js-only" alt="ophyd-async 0.5.1.dev237+g9d2016b89 documentation - Home"/>
   
   
 </a></div>
@@ -475,18 +475,6 @@ window.addEventListener("load", () => mermaid.run());
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reading</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">event_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataKey</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd_async.core</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AsyncStatus</span><span class="p">,</span>
-    <span class="n">Callback</span><span class="p">,</span>
-    <span class="n">NotConnected</span><span class="p">,</span>
-    <span class="n">SignalBackend</span><span class="p">,</span>
-    <span class="n">SignalDatatypeT</span><span class="p">,</span>
-    <span class="n">StrictEnum</span><span class="p">,</span>
-    <span class="n">get_dtype</span><span class="p">,</span>
-    <span class="n">get_unique</span><span class="p">,</span>
-    <span class="n">wait_for_connection</span><span class="p">,</span>
-<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tango</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">AttrDataFormat</span><span class="p">,</span>
     <span class="n">AttributeInfoEx</span><span class="p">,</span>
@@ -504,6 +492,18 @@ window.addEventListener("load", () => mermaid.run());
     <span class="n">set_global_executor</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tango.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_array</span><span class="p">,</span> <span class="n">is_binary</span><span class="p">,</span> <span class="n">is_bool</span><span class="p">,</span> <span class="n">is_float</span><span class="p">,</span> <span class="n">is_int</span><span class="p">,</span> <span class="n">is_str</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd_async.core</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AsyncStatus</span><span class="p">,</span>
+    <span class="n">Callback</span><span class="p">,</span>
+    <span class="n">NotConnected</span><span class="p">,</span>
+    <span class="n">SignalBackend</span><span class="p">,</span>
+    <span class="n">SignalDatatypeT</span><span class="p">,</span>
+    <span class="n">StrictEnum</span><span class="p">,</span>
+    <span class="n">get_dtype</span><span class="p">,</span>
+    <span class="n">get_unique</span><span class="p">,</span>
+    <span class="n">wait_for_connection</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._converters</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">TangoConverter</span><span class="p">,</span>
@@ -696,7 +696,7 @@ window.addEventListener("load", () => mermaid.run());
 
                 <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">_write</span><span class="p">())</span>
                 <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span> <span class="k">as</span> <span class="n">te</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">TimeoutError</span> <span class="k">as</span> <span class="n">te</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> attr put failed: Timeout&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">te</span>
             <span class="k">except</span> <span class="n">DevFailed</span> <span class="k">as</span> <span class="n">de</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -977,7 +977,7 @@ window.addEventListener("load", () => mermaid.run());
                     <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
                     <span class="n">alarm_severity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span> <span class="k">as</span> <span class="n">te</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">TimeoutError</span> <span class="k">as</span> <span class="n">te</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> command failed: Timeout&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">te</span>
             <span class="k">except</span> <span class="n">DevFailed</span> <span class="k">as</span> <span class="n">de</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -1187,13 +1187,6 @@ window.addEventListener("load", () => mermaid.run());
     <span class="n">all_cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">cmd_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">cmd_name</span> <span class="ow">in</span> <span class="n">device_proxy</span><span class="o">.</span><span class="n">get_command_list</span><span class="p">()]</span>
     <span class="k">if</span> <span class="n">trl_name</span> <span class="ow">in</span> <span class="n">all_cmds</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">CommandProxy</span><span class="p">(</span><span class="n">device_proxy</span><span class="p">,</span> <span class="n">trl_name</span><span class="p">)</span>
-
-    <span class="c1"># If version is below tango 9, then pipes are not supported</span>
-    <span class="k">if</span> <span class="n">device_proxy</span><span class="o">.</span><span class="n">info</span><span class="p">()</span><span class="o">.</span><span class="n">server_version</span> <span class="o">&gt;=</span> <span class="mi">9</span><span class="p">:</span>
-        <span class="c1"># all pipes can be always accessible with low register</span>
-        <span class="n">all_pipes</span> <span class="o">=</span> <span class="p">[</span><span class="n">pipe_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">pipe_name</span> <span class="ow">in</span> <span class="n">device_proxy</span><span class="o">.</span><span class="n">get_pipe_list</span><span class="p">()]</span>
-        <span class="k">if</span> <span class="n">trl_name</span> <span class="ow">in</span> <span class="n">all_pipes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Pipes are not supported&quot;</span><span class="p">)</span>
 
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">trl_name</span><span class="si">}</span><span class="s2"> cannot be found in </span><span class="si">{</span><span class="n">device_proxy</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
